@@ -1,60 +1,46 @@
-import { View, TextInput, Button, StyleSheet, Alert, KeyboardAvoidingView, Platform } from 'react-native';
-import { useRouter } from 'expo-router';
+import { View, TextInput, Button, StyleSheet } from 'react-native';
 import { useState } from 'react';
+import { useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LoginScreen() {
   const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (username === 'admin' && password === '1234') {
+      await AsyncStorage.setItem('loggedInUser', username);
       router.replace('/(tabs)/home');
     } else {
-      Alert.alert('Login Failed', 'Wrong credentials!');
+      alert('Wrong credentials!');
     }
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
-    >
-      <View style={styles.inner}>
-        <TextInput
-          placeholder="Username"
-          value={username}
-          onChangeText={setUsername}
-          style={styles.input}
-        />
-        <TextInput
-          placeholder="Password"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-          style={styles.input}
-        />
-        <Button title="Login" onPress={handleLogin} />
-      </View>
-    </KeyboardAvoidingView>
+    <View style={styles.container}>
+      <TextInput
+        placeholder="Username"
+        value={username}
+        onChangeText={setUsername}
+        style={styles.input}
+      />
+      <TextInput
+        placeholder="Password"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
+        style={styles.input}
+      />
+      <Button title="Login" onPress={handleLogin} />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  inner: {
-    flex: 1,
-    justifyContent: 'center',
-    paddingHorizontal: 24,
-  },
+  container: { flex: 1, justifyContent: 'center', padding: 20 },
   input: {
-    height: 48,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    marginBottom: 16,
-    borderRadius: 6,
-    paddingHorizontal: 12,
+    height: 40, borderColor: 'gray', borderWidth: 1,
+    marginBottom: 12, paddingHorizontal: 10
   },
 });
